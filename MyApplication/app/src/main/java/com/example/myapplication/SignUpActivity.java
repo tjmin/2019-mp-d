@@ -1,15 +1,15 @@
-package com.example.myapplication_teamproject;
+package com.example.myapplication;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class SecondActivity extends Activity {
+public class SignUpActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.second);
+        setContentView(R.layout.signup);
 
         Button btn_done=(Button) findViewById(R.id.btn_done);
         btn_done.setOnClickListener(new View.OnClickListener(){
