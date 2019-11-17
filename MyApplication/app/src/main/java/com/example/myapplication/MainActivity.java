@@ -1,6 +1,7 @@
 //작성자: 박재효
 package com.example.myapplication;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,10 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -32,8 +37,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setupRecyclerView();
-
-
 
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
@@ -68,6 +71,16 @@ public class MainActivity extends AppCompatActivity {
         });
         /**************************************************************************/
 
+
+        Button btn_plus = (Button) findViewById(R.id.btn_plus);
+        btn_plus.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),
+                        EditActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void setupRecyclerView() {
@@ -94,6 +107,31 @@ public class MainActivity extends AppCompatActivity {
                 swipeController.onDraw(c);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.action_load_script:
+                Intent intent_loadScript = new Intent(getApplicationContext(),
+                        LoadScriptActivity.class);
+                startActivity(intent_loadScript);
+                return true;
+            case R.id.action_logout:
+                Intent intent_logout = new Intent(getApplicationContext(),
+                        LogoutActivity.class);
+                startActivity(intent_logout);
+                return true;
+            default:
+                return  super.onOptionsItemSelected(item);
+        }
     }
 
 }

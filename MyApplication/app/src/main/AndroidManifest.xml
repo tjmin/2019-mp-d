@@ -24,6 +24,7 @@
         <activity android:name=".LogoutActivity"></activity>
         <activity android:name=".SignUpActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoadScriptActivity" android:theme="@android:style/Theme.Dialog"></activity>
 
     </application>
 
