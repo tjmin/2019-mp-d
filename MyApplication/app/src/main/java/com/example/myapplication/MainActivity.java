@@ -15,10 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -52,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+
 
 
         /******************************** 테스트용 *********************************/
@@ -95,6 +95,15 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.mList.remove(position);
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+
+                Toast.makeText(getApplicationContext(),"메모가 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onLeftClicked(int position){
+                Intent intent_share = new Intent(getApplicationContext(),
+                        ShareScriptActivity.class);
+                startActivity(intent_share);
             }
         });
 

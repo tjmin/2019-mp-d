@@ -3,12 +3,16 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+
 import java.util.List;
 
 public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.ScriptViewHolder>{
@@ -17,12 +21,21 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
     public class ScriptViewHolder extends RecyclerView.ViewHolder {
         protected TextView userId;
         protected TextView title;
+        protected Button scriptBtn;
 
 
         public ScriptViewHolder(View view) {
             super(view);
             this.userId = (TextView) view.findViewById(R.id.userId);
             this.title = (TextView) view.findViewById(R.id.title);
+            this.scriptBtn = (Button) view.findViewById(R.id.scriptBtn);
+
+            itemView.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+
+                }
+            });
         }
     }
 
@@ -58,6 +71,15 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
 
         viewholder.userId.setText(mList.get(position).getUserId());
         viewholder.title.setText(mList.get(position).getTitle());
+
+        viewholder.scriptBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(v.getContext(), EditActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        });
+
     }
 
     @Override

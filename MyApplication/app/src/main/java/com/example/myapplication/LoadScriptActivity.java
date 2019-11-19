@@ -1,5 +1,5 @@
+//작성자: 박재효
 package com.example.myapplication;
-
 
 import android.app.Activity;
 import android.content.Intent;
