@@ -1,40 +1,60 @@
+//작성자: 최지희
 package com.example.myapplication;
-//작성자 최지희
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
+import com.example.myapplication.db.ScriptsDB;
+import com.example.myapplication.db.ScriptsDao;
 
 public class EditActivity extends AppCompatActivity {
-    public Toolbar toolbar1;
-    public Toolbar toolbar2;
-    public EditText texttitle;
 
-    @Override //툴바 구현.
+    public Toolbar toolbar1;
+
+    private EditText inputScriptTitle;
+    private EditText inputScriptContents;
+
+    public static final String SCRIPT_EXTRA_Key = "script_id";
+    private ScriptsDao dao;
+    private Script temp;
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edit_activity);
+        setContentView(R.layout.content_edite);
+
         toolbar1 = findViewById(R.id.mytoolbar);
         setSupportActionBar(toolbar1);
         getSupportActionBar().setTitle("Memo_To");
 
-        toolbar2 = findViewById(R.id.mytoolbar2);
 
-        Button btn_done2=(Button) findViewById(R.id.btn_done2);
-        btn_done2.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                finish();
-            }
-        });
+        inputScriptTitle = findViewById(R.id.txtTitle);
+        inputScriptContents = findViewById(R.id.txtContent);
+
+        dao = ScriptsDB.getInstance(this).scriptsDao();
+        if (getIntent().getExtras() != null) {
+            int id = getIntent().getExtras().getInt(SCRIPT_EXTRA_Key, 0);
+            temp = dao.getScriptById(id);
+            inputScriptTitle.setText(temp.getScriptTitle());
+            inputScriptContents.setText(temp.getScriptContents());
+        } else
+        {
+            inputScriptTitle.setFocusable(true);
+            inputScriptContents.setFocusable(true);
+        }
     }
+
+    private void setSupportActionBar(Toolbar toolbar1) {
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -42,25 +62,31 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        texttitle = findViewById(R.id.txtTitle);
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_save) {
             Toast.makeText(getApplicationContext(), "저장되었습니다.", Toast.LENGTH_LONG).show();
-            if(texttitle.length()==0){
-                texttitle.setText("{무제}");
-            }
-            return true;
+            onSaveScript();
         }
-//        if (id == R.id.action_back){
-//        }
-
         return super.onOptionsItemSelected(item);
+    }
+
+
+// 작성자: 이원구
+    private void onSaveScript() {
+        String textTitle = inputScriptTitle.getText().toString();
+        String textContents = inputScriptContents.getText().toString();
+
+        if (!textTitle.isEmpty()) {
+
+            Script script = new Script("mobileId",textTitle, textContents);
+            dao.insertScript(script);
+            finish();
+        }
     }
 }

@@ -4,12 +4,7 @@ package com.example.myapplication;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,16 +12,34 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.myapplication.callbacks.ScriptListener;
+import com.example.myapplication.db.ScriptsDB;
+import com.example.myapplication.db.ScriptsDao;
+
 import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.myapplication.EditActivity.SCRIPT_EXTRA_Key;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ScriptListener {
+
+    private static final String TAG = "MainActivity";
 
     private ArrayList<Script> mArrayList;
     private ScriptDataAdapter mAdapter;
     private int count = -1;
 
     SwipeController swipeController = null;
+
+    private ScriptsDao dao;
+    private RecyclerView mRecyclerView;
 
 
     @Override
@@ -36,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
 
         setupRecyclerView();
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main_list);
+        mRecyclerView = findViewById(R.id.recyclerview_main_list);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
         mArrayList = new ArrayList<>();
@@ -51,28 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-
-
-
-        /******************************** 테스트용 *********************************/
-        Button buttonInsert = (Button)findViewById(R.id.button_main_insert);
-        buttonInsert.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                count++;
-
-                Script data = new Script("userIDSample"+count,"titleSample" + count,"userid/titleSample/---/path_Sample");
-
-                mArrayList.add(0, data); //RecyclerView의 첫 줄에 삽입
-                //mArrayList.add(data); // RecyclerView의 마지막 줄에 삽입
-
-                mAdapter.notifyDataSetChanged();             }
-        });
-        /**************************************************************************/
-
-
-        Button btn_plus = (Button) findViewById(R.id.btn_plus);
+    Button btn_plus = (Button) findViewById(R.id.btn_plus);
         btn_plus.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),
@@ -80,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        dao = ScriptsDB.getInstance(this).scriptsDao();
     }
+
 
     private void setupRecyclerView() {
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.recyclerview_main_list);
@@ -125,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch(item.getItemId()){
@@ -143,4 +137,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    // 작성자: 이원구
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadScripts();
+    }
+
+
+    //     작성자: 이원구
+    @Override
+    public void onScriptClick(Script script) {
+        Intent edit = new Intent(this, EditActivity.class);
+        edit.putExtra(SCRIPT_EXTRA_Key, script.getId());
+        startActivity(edit);
+    }
+
+
+    //     작성자: 이원구
+    @Override
+    public void onScriptLongClick(Script script) {
+        Log.d(TAG, "onScriptLongClick"+ script.getId());
+    }
+
+
+    //     작성자: 이원구
+    private void loadScripts() {
+        this.mArrayList = new ArrayList<>();
+        List<Script> list = dao.getScripts(); // get All scripts from DataBase
+        this.mArrayList.addAll(list);
+        this.mAdapter = new ScriptDataAdapter(mArrayList);
+        // set listener to adapter
+        this.mAdapter.setListener(this);
+        this.mRecyclerView.setAdapter(mAdapter);
+    }
 }
