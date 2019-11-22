@@ -2,7 +2,7 @@
 // for database(1 of 3)
 // Dao (data object access) to access Notes (delete, insert..)
 
-package com.example.myapplication.db;
+package com.example.myapplication;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
