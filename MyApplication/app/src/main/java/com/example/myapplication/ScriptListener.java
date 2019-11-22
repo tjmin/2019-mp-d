@@ -1,5 +1,5 @@
 // 작성자: 이원구
-package com.example.myapplication.callbacks;
+package com.example.myapplication;
 
 import com.example.myapplication.Script;
 
