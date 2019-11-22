@@ -10,8 +10,8 @@ import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.db.ScriptsDB;
-import com.example.myapplication.db.ScriptsDao;
+import com.example.myapplication.ScriptsDB;
+import com.example.myapplication.ScriptsDao;
 
 public class EditActivity extends AppCompatActivity {
 
