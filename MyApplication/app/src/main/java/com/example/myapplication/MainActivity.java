@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.callbacks.ScriptListener;
+import com.example.myapplication.ScriptListener;
 import com.example.myapplication.ScriptsDB;
 import com.example.myapplication.ScriptsDao;
 
