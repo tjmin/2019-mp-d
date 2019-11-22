@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.callbacks.ScriptListener;
-import com.example.myapplication.db.ScriptsDB;
-import com.example.myapplication.db.ScriptsDao;
+import com.example.myapplication.ScriptsDB;
+import com.example.myapplication.ScriptsDao;
 
 import java.util.ArrayList;
 import java.util.List;
