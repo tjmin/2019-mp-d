@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.myapplication.callbacks.ScriptListener;
+import com.example.myapplication.ScriptListener;
 
 import java.util.List;
 
