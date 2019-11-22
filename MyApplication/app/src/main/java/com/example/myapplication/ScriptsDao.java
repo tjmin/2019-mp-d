@@ -18,14 +18,12 @@ import java.util.List;
 @Dao
 public interface ScriptsDao {
 
-    // if the Script exist replace it
+   // if the Script exist replace it
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertScript(Script script);
 
-
     @Delete
     void deleteScript(Script script);
-
 
     @Update
     void updateScript(Script script);
@@ -35,11 +33,11 @@ public interface ScriptsDao {
     List<Script> getScripts();
 
 
-    @Query("SELECT * FROM scripts WHERE uniqueId = :scriptId") // get Script by uniqueId
+    @Query("SELECT * FROM scripts WHERE id = :scriptId") // get Script by id
     Script getScriptById(int scriptId);
 
 
-    @Query("DELETE FROM scripts WHERE uniqueId = :scriptId")
+    @Query("DELETE FROM scripts WHERE id = :scriptId")
     void deleteScriptById(int scriptId);
 
 }
