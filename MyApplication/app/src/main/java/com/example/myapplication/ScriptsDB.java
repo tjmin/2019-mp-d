@@ -2,7 +2,7 @@
 // for database (2 of 3)
 // DataBase Class, an abstract class to create database
 
-package com.example.myapplication.db;
+package com.example.myapplication;
 
 import android.content.Context;
 
