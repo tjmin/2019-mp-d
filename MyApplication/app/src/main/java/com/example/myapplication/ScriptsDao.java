@@ -1,6 +1,6 @@
 //작성자: 이원구
 // for database(1 of 3)
-// Dao (data object access) to access Notes (delete, insert..)
+// Dao (data object access) to access Scripts (delete, insert..)
 
 package com.example.myapplication;
 
@@ -28,7 +28,7 @@ public interface ScriptsDao {
     @Update
     void updateScript(Script script);
 
-    // list All Notes From Database
+    // list All Scripts From Database
     @Query("SELECT * FROM scripts")
     List<Script> getScripts();
 
