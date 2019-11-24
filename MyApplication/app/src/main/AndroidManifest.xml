@@ -23,12 +23,8 @@
 
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".EditActivity"></activity>
-        <activity android:name=".LogoutActivity" android:theme="@android:style/Theme.Dialog"></activity>
         <activity android:name=".SignUpActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".LoadScriptActivity" android:theme="@android:style/Theme.Dialog"></activity>
-        <activity android:name=".ShareScriptActivity" android:theme="@android:style/Theme.Dialog"></activity>
-
     </application>
 
 </manifest>

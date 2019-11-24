@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_load_script"
-        android:title="공유 게시글 추가"
+        android:title="공유 메모 추가"
         />
     <item
         android:id="@+id/action_logout"
