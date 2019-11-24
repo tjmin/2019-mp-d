@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="20dp"
             android:orientation="vertical">
 
             <TextView
@@ -41,16 +41,16 @@
             <Button
                 android:id="@+id/addBtn"
                 android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="추가"
-                android:onClick="mOnAdd"/>
+                android:layout_height="50dp"
+                android:onClick="mOnAdd"
+                android:text="추가" />
 
             <Button
                 android:id="@+id/cancleBtn"
                 android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:text="취소"
-                android:onClick="mOnCancle"/>
+                android:layout_height="50dp"
+                android:onClick="mOnCancle"
+                android:text="취소" />
         </LinearLayout>
 
     </LinearLayout>

@@ -5,7 +5,7 @@
     <item android:state_focused="false" android:state_pressed="false">
         <shape>
             <corners android:radius="1000dp" />
-            <stroke android:width="3dp" android:color="#2E9AFE" />
+            <stroke android:width="3dp" android:color="#c2e3ec" />
         </shape>
     </item>
     //#BDBDBD  #A4A4A4
@@ -13,7 +13,7 @@
     <item android:state_focused="false" android:state_pressed="true">
         <shape>
             <corners android:radius="100dp" />
-            <solid android:color="#58B8F6" />
+            <solid android:color="#c2e3ec" />
         </shape>
     </item>
 

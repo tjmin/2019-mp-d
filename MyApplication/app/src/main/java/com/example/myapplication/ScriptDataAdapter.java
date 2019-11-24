@@ -33,13 +33,6 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
             this.userId = (TextView) view.findViewById(R.id.userId);
             this.title = (TextView) view.findViewById(R.id.title);
             this.scriptBtn = (Button) view.findViewById(R.id.scriptBtn);
-
-            itemView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-
-                }
-            });
         }
     }
 
@@ -57,15 +50,6 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
 
         return viewHolder;
     }
-
-
-
-//  작성자: 이원구
-    public void setListener(ScriptListener listener) {
-        this.listener = listener;
-    }
-
-
 
     @Override
     public void onBindViewHolder(@NonNull ScriptViewHolder viewholder, int position) {
@@ -94,13 +78,17 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
     }
 
 
-
     @Override
     public int getItemCount() {
         return (null != mList ? mList.size() : 0);
     }
 
-//  작성자: 이원구
+    //  작성자: 이원구
+    public void setListener(ScriptListener listener) {
+        this.listener = listener;
+    }
+
+    //  작성자: 이원구
     private Script getScript(int position) {
         return mList.get(position);
     }
