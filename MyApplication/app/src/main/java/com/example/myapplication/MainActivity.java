@@ -85,9 +85,11 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                mAdapter.mList.remove(position);
+                dao.deleteScript(mAdapter.mList.remove(position));
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
+                
+                loadScripts();
 
                 Toast.makeText(getApplicationContext(),"메모가 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
             }
