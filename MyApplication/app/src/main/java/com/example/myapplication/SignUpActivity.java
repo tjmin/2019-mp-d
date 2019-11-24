@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -18,10 +19,31 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import com.example.myapplication.LoginActivity;
+import java.util.ArrayList;
 
-//민태준
+//작성자 : 민태준
 public class SignUpActivity extends Activity {
+    //아이디 체크 메소드
+    public static int IdCheck(ArrayList<String> iList, ArrayList<String> nList, String id, String pw, String pw2, String name) {
+        if (id.length() < 4 || id.length() > 20) {
+            return 1; //아이디 오류
+        }
+        for (String s : nList) {
+            if (name.equals(s)) {
+                return 4; //이미 존재하는 이름
+            }
+        }
+        for (String s : iList) {
+            if (id.equals(s)) {
+                return 3; //이미 존재하는 아이디
+            }
+        }
+        if (!(pw.equals(pw2)) || pw.length() < 4 || pw.length() > 20) {
+            return 2; //비밀번호 오류
+        }
+        return 0;
+    }
+
 
     private static String IP_ADDRESS = "10.0.2.2";
     private static String TAG = "phptest";
@@ -32,10 +54,16 @@ public class SignUpActivity extends Activity {
     private EditText mEditTextName;
     private TextView mTextViewResult;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup);
+
+        Intent intent = getIntent();
+        final ArrayList<String> iArrayList = intent.getStringArrayListExtra("key_id");
+        final ArrayList<String> nArrayList = intent.getStringArrayListExtra("key_name");
 
         mEditTextId = (EditText)findViewById(R.id.id_text);
         mEditTextPw = (EditText)findViewById(R.id.pw_text);
@@ -45,7 +73,7 @@ public class SignUpActivity extends Activity {
 
         mTextViewResult.setMovementMethod(new ScrollingMovementMethod());
 
-        //signup
+        //signup confirm button
         Button buttonInsert = (Button)findViewById(R.id.btn_done);
         buttonInsert.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,15 +84,44 @@ public class SignUpActivity extends Activity {
                 String pw2 = mEditTextPw2.getText().toString();
                 String name = mEditTextName.getText().toString();
 
-                //id check
-                if (id.length() < 4 || id.length() > 20) {
-                    Toast.makeText(getApplicationContext(), "아이디는 4~20bytes만 가능합니다.", Toast.LENGTH_SHORT).show();
+                if (id.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "아이디를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    mEditTextId.requestFocus();
                     return;
                 }
-                else if (!(pw.equals(pw2)) || pw.length() < 4 || pw.length() > 20) {
-                    Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG,pw + pw2 + pw.length());
+                if (pw.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    mEditTextPw.requestFocus();
                     return;
+                }
+                if (pw2.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "비밀번호를 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    mEditTextPw2.requestFocus();
+                    return;
+                }
+                if (name.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "이름을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    mEditTextName.requestFocus();
+                    return;
+                }
+
+                switch(IdCheck(iArrayList,nArrayList,id,pw,pw2,name)) {
+                    case 1:
+                        Toast.makeText(getApplicationContext(), "아이디는 4~20bytes만 가능합니다.", Toast.LENGTH_SHORT).show();
+                        mEditTextId.requestFocus();
+                        return;
+                    case 2:
+                        Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+                        mEditTextPw.requestFocus();
+                        return;
+                    case 3:
+                        Toast.makeText(getApplicationContext(), "이미 존재하는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                        mEditTextId.requestFocus();
+                        return;
+                    case 4:
+                        Toast.makeText(getApplicationContext(), "이미 존재하는 이름입니다.", Toast.LENGTH_SHORT).show();
+                        mEditTextName.requestFocus();
+                        return;
                 }
 
                 InsertData task = new InsertData();
@@ -84,7 +141,18 @@ public class SignUpActivity extends Activity {
         Button btn_check=(Button) findViewById(R.id.buttonidcheck);
         btn_check.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                
+                String id = mEditTextId.getText().toString();
+                switch(IdCheck(iArrayList,nArrayList,id,"null","null","null")) {
+                    case 1:
+                        Toast.makeText(getApplicationContext(), "아이디는 4~20bytes만 가능합니다.", Toast.LENGTH_SHORT).show();
+                        mEditTextId.requestFocus();
+                        return;
+                    case 3:
+                        Toast.makeText(getApplicationContext(), "이미 존재하는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                        mEditTextId.requestFocus();
+                        return;
+                }
+                Toast.makeText(getApplicationContext(), "사용 가능합니다.", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -36,6 +36,10 @@ public class LoginActivity extends AppCompatActivity {
     private ArrayList<AccountData> mArrayList;
     private String mJsonString;
 
+    private ArrayList<String> iArrayList = new ArrayList<>(); //delivery id array : signup에서 아이디 중복 체크 위해 전달
+    private ArrayList<String> nArrayList = new ArrayList<>(); //delivery id array : signup에서 아이디 중복 체크 위해 전달
+
+    private int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         Button b_login = (Button) findViewById(R.id.b_login);
         b_login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
                 mArrayList.clear();
-
+                flag = 0;
                 GetData task = new GetData();
                 task.execute( "http://" + IP_ADDRESS + "/mp/getjson.php", "");
             }
@@ -58,17 +61,18 @@ public class LoginActivity extends AppCompatActivity {
         Button b_signup = (Button) findViewById(R.id.b_signup);
         b_signup.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),
-                        SignUpActivity.class);
-                startActivity(intent);
+                mArrayList.clear();
+                flag = 1;
+
+                GetData task = new GetData();
+                task.execute( "http://" + IP_ADDRESS + "/mp/getjson.php", "");
             }
         });
 
         Button b_temp = (Button) findViewById(R.id.button_temp_login);
         b_temp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),
-                        MainActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -189,30 +193,40 @@ public class LoginActivity extends AppCompatActivity {
                 accountData.setMember_name(name);
 
                 mArrayList.add(accountData);
+                iArrayList.add(id); //signup 전달용
+                nArrayList.add(name); //signup 전달용
             }
 
-            int login_flag = 0;
-            mEditTextId = (EditText) findViewById(R.id.editText);
-            mEditTextPw = (EditText) findViewById(R.id.editText2);
-            String mId = mEditTextId.getText().toString();
-            String mPw = mEditTextPw.getText().toString();
+            if (flag==1) {
+                Intent intent = new Intent(getApplicationContext(), SignUpActivity.class);
+                intent.putStringArrayListExtra("key_id", iArrayList);
+                intent.putStringArrayListExtra("key_name", nArrayList);
+                startActivity(intent);
+            }
+            else {
+                int login_flag = 0;
+                mEditTextId = (EditText) findViewById(R.id.editText);
+                mEditTextPw = (EditText) findViewById(R.id.editText2);
+                String mId = mEditTextId.getText().toString();
+                String mPw = mEditTextPw.getText().toString();
 
-            for (AccountData p : mArrayList) {
-                String id = p.getMember_id();
-                String pw = p.getMember_pw();
-                String name = p.getMember_name();
+                for (AccountData p : mArrayList) {
+                    String id = p.getMember_id();
+                    String pw = p.getMember_pw();
+                    String name = p.getMember_name();
 
-                if (id.equals(mId) && pw.equals(mPw)) {
-                    Toast.makeText(getApplicationContext(), "Welcome" + name, Toast.LENGTH_LONG).show();
-                    Intent intent2 = new Intent(getApplicationContext(),
-                            MainActivity.class);
-                    startActivity(intent2);
-                    login_flag = 1;
-                    break;
+                    if (id.equals(mId) && pw.equals(mPw)) {
+                        Toast.makeText(getApplicationContext(), "Welcome " + name, Toast.LENGTH_LONG).show();
+                        Intent intent2 = new Intent(getApplicationContext(),
+                                MainActivity.class);
+                        startActivity(intent2);
+                        login_flag = 1;
+                        break;
+                    }
                 }
+                if (login_flag == 0)
+                    Toast.makeText(getApplicationContext(), "Wrong Account", Toast.LENGTH_LONG).show();
             }
-            if (login_flag == 0)
-                Toast.makeText(getApplicationContext(), "Wrong Account", Toast.LENGTH_LONG).show();
 
         } catch (JSONException e) {
             Log.d(TAG, "showResult : ", e);
