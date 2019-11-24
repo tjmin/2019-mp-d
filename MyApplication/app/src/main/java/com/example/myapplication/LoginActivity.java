@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -74,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
+    //php를 통해 db 데이터 가져오기
     private class GetData extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
@@ -88,7 +89,6 @@ public class LoginActivity extends AppCompatActivity {
                     "Please Wait", null, true, true);
         }
 
-
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -97,14 +97,13 @@ public class LoginActivity extends AppCompatActivity {
             Log.d(TAG, "response - " + result);
 
             if (result == null){
+                Log.d(TAG,"null error");
             }
             else {
-
                 mJsonString = result;
                 showResult();
             }
         }
-
 
         @Override
         protected String doInBackground(String... params) {
@@ -113,7 +112,6 @@ public class LoginActivity extends AppCompatActivity {
             String postParameters = params[1];
 
             try {
-
                 URL url = new URL(serverURL);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
@@ -139,7 +137,6 @@ public class LoginActivity extends AppCompatActivity {
                     inputStream = httpURLConnection.getErrorStream();
                 }
 
-
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
 
@@ -154,22 +151,18 @@ public class LoginActivity extends AppCompatActivity {
 
                 return sb.toString().trim();
 
-
             } catch (Exception e) {
-
                 Log.d(TAG, "GetData : Error ", e);
                 errorString = e.toString();
-
                 return null;
             }
-
         }
     }
 
-
+    //db에서 가져온 데이터 사용
     private void showResult(){
 
-        String TAG_JSON = "webnautes";
+        String TAG_JSON = "results";
         String TAG_NUM = "num";
         String TAG_ID = "id";
         String TAG_PW ="pw";
@@ -198,28 +191,28 @@ public class LoginActivity extends AppCompatActivity {
                 mArrayList.add(accountData);
             }
 
-            try {
-                mEditTextId = (EditText) findViewById(R.id.editText);
-                mEditTextPw = (EditText) findViewById(R.id.editText2);
-                String mId = mEditTextId.getText().toString();
-                String mPw = mEditTextPw.getText().toString();
+            int login_flag = 0;
+            mEditTextId = (EditText) findViewById(R.id.editText);
+            mEditTextPw = (EditText) findViewById(R.id.editText2);
+            String mId = mEditTextId.getText().toString();
+            String mPw = mEditTextPw.getText().toString();
 
-                for (AccountData p : mArrayList) {
-                    String id = p.getMember_id();
-                    String pw = p.getMember_pw();
-                    String name = p.getMember_name();
+            for (AccountData p : mArrayList) {
+                String id = p.getMember_id();
+                String pw = p.getMember_pw();
+                String name = p.getMember_name();
 
-                    if (id.equals(mId) && pw.equals(mPw)) {
-                        Log.d(TAG,"correct");
-                        Intent intent2 = new Intent(getApplicationContext(),
-                                MainActivity.class);
-                        startActivity(intent2);
-                        break;
-                    }
+                if (id.equals(mId) && pw.equals(mPw)) {
+                    Toast.makeText(getApplicationContext(), "Welcome" + name, Toast.LENGTH_LONG).show();
+                    Intent intent2 = new Intent(getApplicationContext(),
+                            MainActivity.class);
+                    startActivity(intent2);
+                    login_flag = 1;
+                    break;
                 }
-            } catch (Exception e) {
-
             }
+            if (login_flag == 0)
+                Toast.makeText(getApplicationContext(), "Wrong Account", Toast.LENGTH_LONG).show();
 
         } catch (JSONException e) {
             Log.d(TAG, "showResult : ", e);

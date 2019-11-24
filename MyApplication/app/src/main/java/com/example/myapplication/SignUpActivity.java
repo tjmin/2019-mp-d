@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -17,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import com.example.myapplication.LoginActivity;
 
 //민태준
 public class SignUpActivity extends Activity {
@@ -26,6 +28,7 @@ public class SignUpActivity extends Activity {
 
     private EditText mEditTextId;
     private EditText mEditTextPw;
+    private EditText mEditTextPw2;
     private EditText mEditTextName;
     private TextView mTextViewResult;
 
@@ -36,6 +39,7 @@ public class SignUpActivity extends Activity {
 
         mEditTextId = (EditText)findViewById(R.id.id_text);
         mEditTextPw = (EditText)findViewById(R.id.pw_text);
+        mEditTextPw2 = (EditText)findViewById(R.id.pw_text2);
         mEditTextName = (EditText)findViewById(R.id.name_text);
         mTextViewResult = (TextView)findViewById(R.id.textView_main_result);
 
@@ -49,7 +53,19 @@ public class SignUpActivity extends Activity {
 
                 String id = mEditTextId.getText().toString();
                 String pw = mEditTextPw.getText().toString();
+                String pw2 = mEditTextPw2.getText().toString();
                 String name = mEditTextName.getText().toString();
+
+                //id check
+                if (id.length() < 4 || id.length() > 20) {
+                    Toast.makeText(getApplicationContext(), "아이디는 4~20bytes만 가능합니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else if (!(pw.equals(pw2)) || pw.length() < 4 || pw.length() > 20) {
+                    Toast.makeText(getApplicationContext(), "비밀번호를 다시 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG,pw + pw2 + pw.length());
+                    return;
+                }
 
                 InsertData task = new InsertData();
                 task.execute("http://" + IP_ADDRESS + "/mp/insert.php", id,pw,name);
@@ -58,11 +74,20 @@ public class SignUpActivity extends Activity {
                 mEditTextPw.setText("");
                 mEditTextName.setText("");
 
-                //finish();
+                Toast.makeText(getApplicationContext(), "회원가입 완료", Toast.LENGTH_SHORT).show();
+
+                finish();
             }
         });
 
-        /*
+        //id check
+        Button btn_check=(Button) findViewById(R.id.buttonidcheck);
+        btn_check.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                
+            }
+        });
+
         //cancel
         Button btn_cancel=(Button) findViewById(R.id.btn_cancel);
         btn_cancel.setOnClickListener(new View.OnClickListener(){
@@ -71,7 +96,7 @@ public class SignUpActivity extends Activity {
             }
         });
 
-         */
+
     }
 
 
