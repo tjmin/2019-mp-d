@@ -1,15 +1,10 @@
 package com.example.myapplication;
 
 public class AccountData {
-    private String member_num;
     private String member_id;
     private String member_pw;
     private String member_name;
 
-
-    public String getMember_num() {
-        return member_num;
-    }
 
     public String getMember_id() {
         return member_id;
@@ -21,10 +16,6 @@ public class AccountData {
 
     public String getMember_name() {
         return member_name;
-    }
-
-    public void setMember_num(String member_num) {
-        this.member_num = member_num;
     }
 
     public void setMember_id(String member_id) {

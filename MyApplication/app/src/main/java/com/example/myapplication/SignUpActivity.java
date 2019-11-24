@@ -45,7 +45,7 @@ public class SignUpActivity extends Activity {
     }
 
 
-    private static String IP_ADDRESS = "10.0.2.2";
+    private static String IP_ADDRESS = "13.125.120.7";
     private static String TAG = "phptest";
 
     private EditText mEditTextId;
@@ -125,7 +125,7 @@ public class SignUpActivity extends Activity {
                 }
 
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/mp/insert.php", id,pw,name);
+                task.execute("http://" + IP_ADDRESS + "/insert.php", id,pw,name);
 
                 mEditTextId.setText("");
                 mEditTextPw.setText("");

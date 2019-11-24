@@ -28,7 +28,7 @@ import java.util.ArrayList;
 //작성자 : 민태준
 public class LoginActivity extends AppCompatActivity {
 
-    private static String IP_ADDRESS = "10.0.2.2";
+    private static String IP_ADDRESS = "13.125.120.7";
     private static String TAG = "phptest";
 
     private EditText mEditTextId;
@@ -54,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
                 mArrayList.clear();
                 flag = 0;
                 GetData task = new GetData();
-                task.execute( "http://" + IP_ADDRESS + "/mp/getjson.php", "");
+                task.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
             }
         });
 
@@ -65,17 +65,10 @@ public class LoginActivity extends AppCompatActivity {
                 flag = 1;
 
                 GetData task = new GetData();
-                task.execute( "http://" + IP_ADDRESS + "/mp/getjson.php", "");
+                task.execute( "http://" + IP_ADDRESS + "/getjson.php", "");
             }
         });
 
-        Button b_temp = (Button) findViewById(R.id.button_temp_login);
-        b_temp.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
 
@@ -167,7 +160,6 @@ public class LoginActivity extends AppCompatActivity {
     private void showResult(){
 
         String TAG_JSON = "results";
-        String TAG_NUM = "num";
         String TAG_ID = "id";
         String TAG_PW ="pw";
         String TAG_NAME ="name";
@@ -180,14 +172,12 @@ public class LoginActivity extends AppCompatActivity {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
-                String num = item.getString(TAG_NUM);
                 String id = item.getString(TAG_ID);
                 String pw = item.getString(TAG_PW);
                 String name = item.getString(TAG_NAME);
 
                 AccountData accountData = new AccountData();
 
-                accountData.setMember_num(num);
                 accountData.setMember_id(id);
                 accountData.setMember_pw(pw);
                 accountData.setMember_name(name);
