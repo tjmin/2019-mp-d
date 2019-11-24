@@ -83,14 +83,16 @@ public class EditActivity extends AppCompatActivity {
         String textContents = inputScriptContents.getText().toString();
 
 //      If scrip is same -> update or upload a new script
-        temp.setScriptTitle(textTitle);
-        temp.setScriptContents(textContents);
-
-        if(temp.getId() == -1)
-            dao.insertScript(temp);
-        else dao.updateScript(temp);
-
-
+       if (!textTitle.isEmpty()) {
+            if (temp == null) {
+                temp = new Script("mobileId", textTitle, textContents);
+                dao.insertScript(temp);
+            } else {
+                temp.setScriptTitle(textTitle);
+                temp.setScriptContents(textContents);
+                dao.updateScript(temp);
+            }
         finish();
         }
     }
+}
