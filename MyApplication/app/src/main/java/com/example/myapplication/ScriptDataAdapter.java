@@ -1,6 +1,8 @@
 //작성자 : 박재효
 package com.example.myapplication;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -62,6 +64,8 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
         viewholder.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         viewholder.userId.setGravity(Gravity.LEFT);
         viewholder.title.setGravity(Gravity.LEFT);
+
+        viewholder.title.setTypeface(Typeface.DEFAULT_BOLD);
 
         viewholder.userId.setText(mList.get(position).getUserId());
         viewholder.title.setText(mList.get(position).getScriptTitle());

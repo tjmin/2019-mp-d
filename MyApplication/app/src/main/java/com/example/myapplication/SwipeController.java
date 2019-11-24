@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -160,7 +161,7 @@ class SwipeController extends ItemTouchHelper.Callback {
         drawText("SHARE", c, leftButton, p);
 
         RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-        p.setColor(Color.parseColor("#db7286"));
+        p.setColor(Color.parseColor("#f5002d"));
         c.drawRoundRect(rightButton, corners, corners, p);
         drawText("DELETE", c, rightButton, p);
 
@@ -174,10 +175,11 @@ class SwipeController extends ItemTouchHelper.Callback {
     }
 
     private void drawText(String text, Canvas c, RectF button, Paint p) {
-        float textSize = 30;
-        p.setColor(Color.BLACK);
+        float textSize = 40;
+        p.setColor(Color.WHITE);
         p.setAntiAlias(true);
         p.setTextSize(textSize);
+        p.setTypeface(Typeface.DEFAULT_BOLD);
 
         float textWidth = p.measureText(text);
         c.drawText(text, button.centerX()-(textWidth/2), button.centerY()+(textSize/2), p);
