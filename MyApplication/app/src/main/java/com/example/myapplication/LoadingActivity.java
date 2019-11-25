@@ -1,5 +1,5 @@
 package com.example.myapplication;
-
+//작성자: 송경민
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
