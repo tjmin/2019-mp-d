@@ -32,9 +32,8 @@ public class EditActivity extends AppCompatActivity {
     private EditText inputScriptContents;
 
     public static final String SCRIPT_EXTRA_Key = "script_id";
-    private ScriptsDao dao;
-    private Script temp;
 
+    private String kname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +48,7 @@ public class EditActivity extends AppCompatActivity {
         inputScriptTitle = findViewById(R.id.txtTitle);
         inputScriptContents = findViewById(R.id.txtContent);
 
-        dao = ScriptsDB.getInstance(this).scriptsDao();
-        if (getIntent().getExtras() != null) {
-            int id = getIntent().getExtras().getInt(SCRIPT_EXTRA_Key, 0);
-            temp = dao.getScriptById(id);
-            inputScriptTitle.setText(temp.getScriptTitle());
-            inputScriptContents.setText(temp.getScriptContents());
-        } else
-        {
-            inputScriptTitle.setFocusable(true);
-            inputScriptContents.setFocusable(true);
-        }
+        kname = getIntent().getStringExtra("key_name"); //id를 main activity에서 전달받음
     }
 
     private void setSupportActionBar(Toolbar toolbar1) {
@@ -96,14 +85,13 @@ public EditText txttitle ;
 
 // 작성자: 이원구
     private void onSaveScript() {
-        String userid = "temp"; ///////////////
         String sharecode = "temp"; /////////////
 
         String title = inputScriptTitle.getText().toString();
         String contents = inputScriptContents.getText().toString();
 
         InsertData task = new InsertData();
-        task.execute("http://" + IP_ADDRESS + "/insertmemo.php", "userid="+userid, "&title="+title, "&contents="+contents, "&sharecode="+sharecode);
+        task.execute("http://" + IP_ADDRESS + "/insertmemo.php", "userid="+kname, "&title="+title, "&contents="+contents, "&sharecode="+sharecode);
 
         finish();
     }

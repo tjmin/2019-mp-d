@@ -58,40 +58,46 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
     private RecyclerView mRecyclerView;
 
+    private String kid;
+    private String kname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Memo Together");
+        setTitle("MEMO TOGETHER");
 
         setupRecyclerView();
 
 
-        mRecyclerView = findViewById(R.id.recyclerview_main_list);
+        mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_main_list);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
         mArrayList = new ArrayList<>();
-
         mAdapter = new ScriptDataAdapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
+        kid = getIntent().getStringExtra("key_id"); //id를 main activity에서 전달받음
+        kname = getIntent().getStringExtra("key_name"); //id를 main activity에서 전달받음
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
+
+        loadScripts();
+
 
         Button btn_plus = (Button) findViewById(R.id.btn_plus);
         btn_plus.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),
                         EditActivity.class);
+                intent.putExtra("key_name", kname);
                 startActivity(intent);
             }
         });
-        loadScripts();
     }
 
 
@@ -252,15 +258,12 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
     //     작성자: 이원구
     private void loadScripts() {
-        this.mArrayList = new ArrayList<>();
+        mArrayList.clear();
+        mAdapter.notifyDataSetChanged();
+
         GetData task = new GetData();
         task.execute( "http://" + IP_ADDRESS + "/getmemo.php", "");
-        //List<Script> list = dao.getScripts(); // get All scripts from DataBase
-        //this.mArrayList.addAll(list);
-        this.mAdapter = new ScriptDataAdapter(mArrayList);
-        // set listener to adapter
-        this.mAdapter.setListener(this);
-        this.mRecyclerView.setAdapter(mAdapter);
+
     }
 
 
@@ -366,13 +369,15 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 String sharecode = item.getString(TAG_SHARECODE);
 
                 Script memoScript = new Script();
+                if (userid.equals(kname)) {
+                    memoScript.setUserId(userid);
+                    memoScript.setScriptTitle(title);
+                    memoScript.setScriptContents(contents);
+                    memoScript.setScriptSharecode(sharecode);
+                    mArrayList.add(memoScript);
+                }
 
-                memoScript.setUserId(userid);
-                memoScript.setScriptTitle(title);
-                memoScript.setScriptContents(contents);
-                memoScript.setScriptSharecode(sharecode);
-
-                mArrayList.add(memoScript);
+                mAdapter.notifyDataSetChanged();
             }
 
         } catch (JSONException e) {

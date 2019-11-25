@@ -208,9 +208,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (id.equals(mId) && pw.equals(mPw)) {
                         Toast.makeText(getApplicationContext(), "Welcome " + name, Toast.LENGTH_LONG).show();
-                        Intent intent2 = new Intent(getApplicationContext(),
-                                MainActivity.class);
-                        startActivity(intent2);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("key_id", id);
+                        intent.putExtra("key_name", name);
+                        startActivity(intent);
                         login_flag = 1;
                         break;
                     }
