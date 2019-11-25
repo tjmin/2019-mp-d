@@ -14,7 +14,7 @@ public class Script {
     @PrimaryKey(autoGenerate = true)
     private int id; // default value
     @ColumnInfo(name = "userName")
-    private String userId = "mobileId";   //default
+    private String userId;
     @ColumnInfo(name = "title")
     private String scriptTitle;
     @ColumnInfo(name = "contents")
@@ -49,7 +49,7 @@ public class Script {
     }
 
     public void setUserId(String userName) {
-        this.userId = userId;
+        this.userId = userName;
     }
 
     public String getScriptTitle() {
