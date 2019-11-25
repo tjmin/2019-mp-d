@@ -1,6 +1,6 @@
 package com.example.myapplication;
 
-public class AccountData {
+public class ClassAccount {
     private String member_id;
     private String member_pw;
     private String member_name;

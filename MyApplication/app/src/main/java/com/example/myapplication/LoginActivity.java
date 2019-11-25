@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText mEditTextId;
     private EditText mEditTextPw;
-    private ArrayList<AccountData> mArrayList;
+    private ArrayList<ClassAccount> mArrayList;
     private String mJsonString;
 
     private ArrayList<String> iArrayList = new ArrayList<>(); //delivery id array : signup에서 아이디 중복 체크 위해 전달
@@ -177,13 +177,13 @@ public class LoginActivity extends AppCompatActivity {
                 String pw = item.getString(TAG_PW);
                 String name = item.getString(TAG_NAME);
 
-                AccountData accountData = new AccountData();
+                ClassAccount classAccount = new ClassAccount();
 
-                accountData.setMember_id(id);
-                accountData.setMember_pw(pw);
-                accountData.setMember_name(name);
+                classAccount.setMember_id(id);
+                classAccount.setMember_pw(pw);
+                classAccount.setMember_name(name);
 
-                mArrayList.add(accountData);
+                mArrayList.add(classAccount);
                 iArrayList.add(id); //signup 전달용
                 nArrayList.add(name); //signup 전달용
             }
@@ -201,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                 String mId = mEditTextId.getText().toString();
                 String mPw = mEditTextPw.getText().toString();
 
-                for (AccountData p : mArrayList) {
+                for (ClassAccount p : mArrayList) {
                     String id = p.getMember_id();
                     String pw = p.getMember_pw();
                     String name = p.getMember_name();

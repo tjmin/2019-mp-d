@@ -44,6 +44,17 @@ public class SignUpActivity extends Activity {
         return 0;
     }
 
+    //insert 메소드
+    public void InsertAccount(String id, String pw, String name) {
+        InsertData task = new InsertData();
+        task.execute("http://" + IP_ADDRESS + "/insert.php", "id="+id, "&pw="+pw, "&name="+name); }
+    public void InsertMemo(String userid, String title, String contents, String sharecode) {
+        InsertData task = new InsertData();
+        task.execute("http://" + IP_ADDRESS + "/insertmemo.php", "userid="+userid, "&title="+title, "&contents="+contents, "&sharecode="+sharecode); }
+    public void InsertShare(String memoid, String shareid) {
+        InsertData task = new InsertData();
+        task.execute("http://" + IP_ADDRESS + "/insertshare.php", "memoid="+memoid, "&shareid="+shareid); }
+
 
     private static String IP_ADDRESS = "13.125.120.7";
     private static String TAG = "phptest";
@@ -83,6 +94,7 @@ public class SignUpActivity extends Activity {
                 String pw = mEditTextPw.getText().toString();
                 String pw2 = mEditTextPw2.getText().toString();
                 String name = mEditTextName.getText().toString();
+
 
                 if (id.length() == 0) {
                     Toast.makeText(getApplicationContext(), "아이디를 입력해주세요.", Toast.LENGTH_SHORT).show();
@@ -124,8 +136,7 @@ public class SignUpActivity extends Activity {
                         return;
                 }
 
-                InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/insert.php", id,pw,name);
+                InsertAccount(id,pw,name);
 
                 mEditTextId.setText("");
                 mEditTextPw.setText("");
@@ -194,12 +205,13 @@ public class SignUpActivity extends Activity {
         @Override
         protected String doInBackground(String... params) {
 
-            String id = (String)params[1];
-            String pw = (String)params[2];
-            String name = (String)params[3];
+            String s1 = (String)params[1];
+            String s2 = (String)params[2];
+            String s3 = (String)params[3];
+            String s4 = (String)params[4];
 
             String serverURL = (String)params[0];
-            String postParameters = "id=" + id + "&pw=" + pw + "&name=" + name;
+            String postParameters = s1+s2+s3+s4;
 
             try {
 
