@@ -19,12 +19,16 @@ public class Script {
     private String scriptTitle;
     @ColumnInfo(name = "contents")
     private String scriptContents;
-//    @ColumnInfo(name = "path")
+    private String scriptSharecode;
+    //    @ColumnInfo(name = "path")
 //    private String scriptPath;
 
     @Ignore // we don't want to store this value on database so ignore it
     private boolean checked = false;
 
+    public Script() {
+
+    }
 
     public Script(String userId, String scriptTitle, String scriptContents) {
         this.userId = userId;
@@ -70,6 +74,14 @@ public class Script {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    public String getScriptSharecode() {
+        return scriptSharecode;
+    }
+
+    public void setScriptSharecode(String scriptSharecode) {
+        this.scriptSharecode = scriptSharecode;
     }
 
     //    public String getScriptPath() {

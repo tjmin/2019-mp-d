@@ -1,11 +1,13 @@
 //작성자: 박재효
 package com.example.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +30,16 @@ import com.example.myapplication.ScriptListener;
 import com.example.myapplication.ScriptsDB;
 import com.example.myapplication.ScriptsDao;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +48,7 @@ import static com.example.myapplication.EditActivity.SCRIPT_EXTRA_Key;
 
 public class MainActivity extends AppCompatActivity implements ScriptListener {
 
+    private static String IP_ADDRESS = "13.125.120.7";
     private static final String TAG = "MainActivity";
 
     private ArrayList<Script> mArrayList;
@@ -43,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
     SwipeController swipeController = null;
 
-    private ScriptsDao dao;
     private RecyclerView mRecyclerView;
 
 
@@ -71,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-    Button btn_plus = (Button) findViewById(R.id.btn_plus);
+        Button btn_plus = (Button) findViewById(R.id.btn_plus);
         btn_plus.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(),
@@ -79,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 startActivity(intent);
             }
         });
-        dao = ScriptsDB.getInstance(this).scriptsDao();
+        loadScripts();
     }
 
 
@@ -92,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                dao.deleteScript(mAdapter.mList.remove(position));
+                //dao.deleteScript(mAdapter.mList.remove(position));
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
 
@@ -241,11 +253,130 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     //     작성자: 이원구
     private void loadScripts() {
         this.mArrayList = new ArrayList<>();
-        List<Script> list = dao.getScripts(); // get All scripts from DataBase
-        this.mArrayList.addAll(list);
+        GetData task = new GetData();
+        task.execute( "http://" + IP_ADDRESS + "/getmemo.php", "");
+        //List<Script> list = dao.getScripts(); // get All scripts from DataBase
+        //this.mArrayList.addAll(list);
         this.mAdapter = new ScriptDataAdapter(mArrayList);
         // set listener to adapter
         this.mAdapter.setListener(this);
         this.mRecyclerView.setAdapter(mAdapter);
+    }
+
+
+    private String mJsonString;
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(MainActivity.this,
+                    "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+            if (result == null) {
+                Log.d(TAG, "null error");
+            } else {
+                mJsonString = result;
+                showResult();
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+                return null;
+            }
+        }
+    }
+
+    private void showResult () {
+
+        String TAG_JSON = "results";
+        String TAG_USERID = "userid";
+        String TAG_TITLE = "title";
+        String TAG_CONTENTS = "contents";
+        String TAG_SHARECODE = "sharecode";
+
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String userid = item.getString(TAG_USERID);
+                String title = item.getString(TAG_TITLE);
+                String contents = item.getString(TAG_CONTENTS);
+                String sharecode = item.getString(TAG_SHARECODE);
+
+                Script memoScript = new Script();
+
+                memoScript.setUserId(userid);
+                memoScript.setScriptTitle(title);
+                memoScript.setScriptContents(contents);
+                memoScript.setScriptSharecode(sharecode);
+
+                mArrayList.add(memoScript);
+            }
+
+        } catch (JSONException e) {
+            Log.d(TAG, "showResult : ", e);
+        }
     }
 }

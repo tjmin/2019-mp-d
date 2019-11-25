@@ -18,6 +18,7 @@ public class ClassMemo {
     public String getMember_contents() {
         return member_contents;
     }
+
     public String getMember_sharecode() {
         return member_sharecode;
     }
