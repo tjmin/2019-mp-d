@@ -1,95 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 작성자: 송경민 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:padding="30dp"
-    android:background="#ffffff">
+    android:padding="30dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="87dp"
+        android:layout_height="wrap_content"
 
-        android:layout_marginLeft="21dp"
+        android:layout_centerHorizontal="true"
+
         android:layout_marginTop="100dp"
-
         android:orientation="horizontal"
         android:visibility="visible"
         tools:visibility="visible">
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="42dp"
-            android:text="ID               "
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="ID"
+            android:textColor="#000000"
+            android:textSize="20dp"
             android:visibility="visible"
             tools:visibility="visible" />
 
         <EditText
             android:id="@+id/editText"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ems="10"
             android:inputType="textPersonName"
+            android:textColor="#000000"
             tools:layout_editor_absoluteY="138dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="365dp"
-        android:layout_height="75dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="50dp"
         android:layout_marginTop="200dp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:text="Password" />
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:text="PW"
+            android:textColor="#000000"
+            android:textSize="20dp" />
 
         <EditText
             android:id="@+id/editText2"
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:ems="10"
             android:inputType="textPassword"
-            tools:layout_editor_absoluteX="102dp"
-            tools:layout_editor_absoluteY="226dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="273dp"
-        android:layout_height="60dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="300dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/b_login"
-            android:layout_width="130dp"
-            android:layout_height="50dp"
-            android:text="로그인"
-            tools:layout_editor_absoluteX="99dp"
-            tools:layout_editor_absoluteY="361dp" />
-
-        <Button
-            android:id="@+id/b_signup"
-            android:layout_width="130dp"
-            android:layout_height="50dp"
-            android:text="회원가입"
-            tools:layout_editor_absoluteX="227dp"
-            tools:layout_editor_absoluteY="361dp" />
+            android:textColor="#000000"
+            tools:layout_editor_absoluteY="138dp" />
 
     </LinearLayout>
+
+    <Button
+        android:id="@+id/b_login"
+        android:layout_width="240dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="175dp"
+        android:background="@drawable/yellow_index"
+        android:hapticFeedbackEnabled="false"
+        android:stateListAnimator="@null"
+        android:text="로그인"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="99dp"
+        tools:layout_editor_absoluteY="361dp" />
+
+    <Button
+        android:id="@+id/b_signup"
+        android:layout_width="240dp"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/orange_index"
+        android:stateListAnimator="@null"
+        android:text="회원가입"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="99dp"
+        tools:layout_editor_absoluteY="361dp" />
 
 </RelativeLayout>
-
-
-

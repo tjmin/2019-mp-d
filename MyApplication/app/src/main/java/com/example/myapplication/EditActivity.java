@@ -25,7 +25,7 @@ public class EditActivity extends AppCompatActivity {
 
         toolbar1 = findViewById(R.id.mytoolbar);
         setSupportActionBar(toolbar1);
-        getSupportActionBar().setTitle("Memo_To");
+        getSupportActionBar().setTitle("MEMO TOGETHER");
 
 
         inputScriptTitle = findViewById(R.id.txtTitle);
