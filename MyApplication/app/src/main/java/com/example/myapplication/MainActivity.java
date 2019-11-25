@@ -175,9 +175,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Toast.makeText(getApplicationContext(),"로그아웃 되었습니다.",Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(),
-                                LoginActivity.class);
-                        startActivity(intent);
+                        finish();
                     }
                 });
         builder.setNegativeButton("취소",
