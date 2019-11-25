@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,26 +23,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 
-import com.example.myapplication.ScriptListener;
-import com.example.myapplication.ScriptsDB;
-import com.example.myapplication.ScriptsDao;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.myapplication.EditActivity.SCRIPT_EXTRA_Key;
 
 
-public class MainActivity extends AppCompatActivity implements ScriptListener {
+public class MainActivity extends AppCompatActivity{
 
-    private static final String TAG = "MainActivity";
 
-    private ArrayList<Script> mArrayList;
     private ScriptDataAdapter mAdapter;
 
     SwipeController swipeController = null;
 
-    private ScriptsDao dao;
+
     private RecyclerView mRecyclerView;
 
 
@@ -61,9 +50,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        mArrayList = new ArrayList<>();
 
-        mAdapter = new ScriptDataAdapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -79,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 startActivity(intent);
             }
         });
-        dao = ScriptsDB.getInstance(this).scriptsDao();
     }
 
 
@@ -92,11 +78,10 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                dao.deleteScript(mAdapter.mList.remove(position));
+                mAdapter.mList.remove(position);
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
-                
-                loadScripts();
+
 
                 Toast.makeText(getApplicationContext(),"메모가 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
             }
@@ -209,41 +194,5 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                     }
                 });
         builder.show();
-    }
-
-
-    // 작성자: 이원구
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadScripts();
-    }
-
-
-    //     작성자: 이원구
-    @Override
-    public void onScriptClick(Script script) {
-        Intent edit = new Intent(this, EditActivity.class);
-        edit.putExtra(SCRIPT_EXTRA_Key, script.getId());
-        startActivity(edit);
-    }
-
-
-    //     작성자: 이원구
-    @Override
-    public void onScriptLongClick(Script script) {
-        Log.d(TAG, "onScriptLongClick"+ script.getId());
-    }
-
-
-    //     작성자: 이원구
-    private void loadScripts() {
-        this.mArrayList = new ArrayList<>();
-        List<Script> list = dao.getScripts(); // get All scripts from DataBase
-        this.mArrayList.addAll(list);
-        this.mAdapter = new ScriptDataAdapter(mArrayList);
-        // set listener to adapter
-        this.mAdapter.setListener(this);
-        this.mRecyclerView.setAdapter(mAdapter);
     }
 }
