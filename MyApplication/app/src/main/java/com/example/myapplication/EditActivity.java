@@ -10,9 +10,6 @@ import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.ScriptsDB;
-import com.example.myapplication.ScriptsDao;
-
 public class EditActivity extends AppCompatActivity {
 
     public Toolbar toolbar1;
@@ -62,19 +59,25 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
-
+public EditText txttitle ;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        txttitle = findViewById(R.id.txtTitle);
         if (id == R.id.action_save) {
-            Toast.makeText(getApplicationContext(), "저장되었습니다.", Toast.LENGTH_LONG).show();
+            if(txttitle.length() == 0) {
+                Toast.makeText(getApplicationContext(), "제목을 입력해주세요", Toast.LENGTH_LONG).show();
+            }
+            else Toast.makeText(getApplicationContext(), "저장되었습니다.", Toast.LENGTH_LONG).show();
             onSaveScript();
-        }
+            }
         return super.onOptionsItemSelected(item);
-    }
+        }
+
+
 
 
 // 작성자: 이원구
