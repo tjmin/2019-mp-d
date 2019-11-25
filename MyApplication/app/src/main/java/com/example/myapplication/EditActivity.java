@@ -1,7 +1,10 @@
 //작성자: 최지희
 package com.example.myapplication;
 
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -10,24 +13,25 @@ import android.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.myapplication.ScriptsDB;
-import com.example.myapplication.ScriptsDao;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-import java.util.Date;
 
 public class EditActivity extends AppCompatActivity {
 
+    private static String IP_ADDRESS = "13.125.120.7";
+    private static String TAG = "phptest";
+
     public Toolbar toolbar1;
 
-    private EditText inputScriptTitle;
-    private EditText inputScriptContents;
+    private EditText mEditTextTitle;
+    private EditText mEditTextContents;
 
     public static final String SCRIPT_EXTRA_Key = "script_id";
-
-//   로컬db
-//    private ScriptsDao dao;
-
-    private Script temp;
 
 
     @Override
@@ -37,23 +41,11 @@ public class EditActivity extends AppCompatActivity {
 
         toolbar1 = findViewById(R.id.mytoolbar);
         setSupportActionBar(toolbar1);
-        getSupportActionBar().setTitle("Memo_To");
+        getSupportActionBar().setTitle("MEMO TOGETHER");
 
 
-        inputScriptTitle = findViewById(R.id.txtTitle);
-        inputScriptContents = findViewById(R.id.txtContent);
-
-//        로컬db
-//        dao = ScriptsDB.getInstance(this).scriptsDao();
-//        if (getIntent().getExtras() != null) {
-//            int id = getIntent().getExtras().getInt(SCRIPT_EXTRA_Key, 0);
-//            temp = dao.getScriptById(id);
-//            inputScriptTitle.setText(temp.getScriptTitle());
-//            inputScriptContents.setText(temp.getScriptContents());
-//        } else {
-//            inputScriptTitle.setFocusable(true);
-//            inputScriptContents.setFocusable(true);
-//        }
+        mEditTextTitle = findViewById(R.id.txtTitle);
+        mEditTextContents = findViewById(R.id.txtContent);
     }
 
     private void setSupportActionBar(Toolbar toolbar1) {
@@ -81,26 +73,106 @@ public class EditActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-//  로컬db에 저장
-    // 작성자: 이원구
+    // 작성자: 민태준
     private void onSaveScript() {
+        String userid = "temp"; ///////////////
+        String sharecode = "temp"; /////////////
 
-        String textTitle = inputScriptTitle.getText().toString();
-        String textContents = inputScriptContents.getText().toString();
+        String title = mEditTextTitle.getText().toString();
+        String contents = mEditTextContents.getText().toString();
 
+        InsertData task = new InsertData();
+        task.execute("http://" + IP_ADDRESS + "/insertmemo.php", "userid="+userid, "&title="+title, "&contents="+contents, "&sharecode="+sharecode);
 
-//        로컬db
-//      If scrip is same -> update or upload a new script
-//            if (temp == null) {
-//                temp = new Script("mobileId", textTitle, textContents);
-//                dao.insertScript(temp);
-//            } else {
-//                temp.setScriptTitle(textTitle);
-//                temp.setScriptContents(textContents);
-//                dao.updateScript(temp);
-//            }
-            finish();
-
+        finish();
     }
+
+
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(EditActivity.this,
+                    "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String s1 = (String)params[1];
+            String s2 = (String)params[2];
+            String s3 = (String)params[3];
+            String s4 = (String)params[4];
+
+            String serverURL = (String)params[0];
+            String postParameters = s1+s2+s3+s4;
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
+
 }
+
