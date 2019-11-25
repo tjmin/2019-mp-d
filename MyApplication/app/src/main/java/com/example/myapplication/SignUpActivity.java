@@ -208,10 +208,9 @@ public class SignUpActivity extends Activity {
             String s1 = (String)params[1];
             String s2 = (String)params[2];
             String s3 = (String)params[3];
-            String s4 = (String)params[4];
 
-            String serverURL = (String)params[0];
-            String postParameters = s1+s2+s3+s4;
+            String serverURL = params[0];
+            String postParameters = s1 + s2 + s3;
 
             try {
 
