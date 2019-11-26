@@ -112,15 +112,16 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 task.execute("http://" + IP_ADDRESS + "/deletememo.php", "id=" + id);
 
                 mAdapter.mList.remove(position);
-
                 loadScripts();
-
                 Toast.makeText(getApplicationContext(),"메모가 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onLeftClicked(int position){
-                show_share();
+                Script script = mAdapter.getScript(position);
+                String share = script.getScriptSharecode();
+
+                show_share(share);
             }
         });
 
@@ -157,10 +158,8 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         }
     }
 
-    void show_share(){
-        final String path = "(공유용 주소)";
-
-        //path 얻어오는 코드 or 함수 들어있어야함
+    void show_share(String share){
+        final String path = share;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("공유할 메모 주소");
