@@ -156,12 +156,12 @@ class SwipeController extends ItemTouchHelper.Callback {
         Paint p = new Paint();
 
         RectF leftButton = new RectF(itemView.getLeft(), itemView.getTop(), itemView.getLeft() + buttonWidthWithoutPadding, itemView.getBottom());
-        p.setColor(Color.parseColor("#80c5d8"));
+        p.setColor(Color.parseColor("#fab935"));
         c.drawRoundRect(leftButton, corners, corners, p);
         drawText("SHARE", c, leftButton, p);
 
         RectF rightButton = new RectF(itemView.getRight() - buttonWidthWithoutPadding, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-        p.setColor(Color.parseColor("#8977ad"));
+        p.setColor(Color.parseColor("#fd8938"));
         c.drawRoundRect(rightButton, corners, corners, p);
         drawText("DELETE", c, rightButton, p);
 

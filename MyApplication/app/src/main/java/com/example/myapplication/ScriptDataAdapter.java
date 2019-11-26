@@ -77,9 +77,9 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
         String mid = script.getUserId();
         Log.d("TAG",mid+" "+id);
         if (!mid.equals(id))
-            viewholder.title.setTextColor(Color.rgb(128,197,216));
+            viewholder.title.setTextColor(Color.parseColor("#5e5e5e"));
         else {
-            viewholder.title.setTextColor(Color.rgb(137,119,173));
+            viewholder.title.setTextColor(Color.parseColor("#564675"));
 
         }
 
