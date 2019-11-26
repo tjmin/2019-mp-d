@@ -58,8 +58,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
     private RecyclerView mRecyclerView;
 
-    private String kid;
-    private String kname;
+    private String kid, kname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         setTitle("MEMO TOGETHER");
 
         setupRecyclerView();
-
 
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview_main_list);
         LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(this);
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        loadScripts();
+        //loadScripts();
 
 
         Button btn_plus = (Button) findViewById(R.id.btn_plus);
@@ -244,7 +242,10 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     @Override
     public void onScriptClick(Script script) {
         Intent edit = new Intent(this, EditActivity.class);
-        edit.putExtra(SCRIPT_EXTRA_Key, script.getId());
+
+        edit.putExtra("key_title", script.getScriptTitle());
+        edit.putExtra("key_contents", script.getScriptContents());
+
         startActivity(edit);
     }
 
@@ -259,11 +260,11 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     //     작성자: 이원구
     private void loadScripts() {
         mArrayList.clear();
-        mAdapter.notifyDataSetChanged();
+
+        mAdapter.setListener(this);
 
         GetData task = new GetData();
         task.execute( "http://" + IP_ADDRESS + "/getmemo.php", "");
-
     }
 
 
