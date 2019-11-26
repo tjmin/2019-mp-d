@@ -3,6 +3,7 @@ package com.example.myapplication;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -17,12 +18,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.ScriptListener;
 
 import java.util.List;
+import java.util.Random;
 
 public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.ScriptViewHolder>{
 
     public List<Script> mList;
     private ScriptListener listener;
 
+    private String id;
 
     public class ScriptViewHolder extends RecyclerView.ViewHolder {
 
@@ -60,7 +63,7 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
 
         if (script != null){
 
-        viewholder.userId.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+        viewholder.userId.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
         viewholder.title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         viewholder.userId.setGravity(Gravity.LEFT);
         viewholder.title.setGravity(Gravity.LEFT);
@@ -69,6 +72,15 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
 
         viewholder.userId.setText(mList.get(position).getUserId());
         viewholder.title.setText(mList.get(position).getScriptTitle());
+
+
+        String mid = script.getUserId();
+        Log.d("TAG",mid+" "+id);
+        if (mid.equals(id))
+        viewholder.userId.setTextColor(Color.rgb(32,220,57));
+        else {
+            viewholder.userId.setTextColor(Color.rgb(40,126,152));
+        }
 
 
         viewholder.scriptBtn.setOnClickListener(new View.OnClickListener()
@@ -95,5 +107,9 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
     //  작성자: 이원구
     public Script getScript(int position) {
         return mList.get(position);
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
     private RecyclerView mRecyclerView;
 
-    private String kname;
+    private String kid, kname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,10 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         mAdapter = new ScriptDataAdapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
+        kid = getIntent().getStringExtra("key_id"); //id를 main activity에서 전달받음
         kname = getIntent().getStringExtra("key_name"); //id를 main activity에서 전달받음
+        mAdapter.setId(kid);
+
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
                 mLinearLayoutManager.getOrientation());
@@ -513,7 +516,8 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                     memoScript.setScriptContents(contents);
                     memoScript.setScriptSharecode(sharecode);
                     mArrayList.add(memoScript);
-                } //19dudt0d3t
+
+                }
                 else { //다른 사람이 만든 메모면
                     for (int j = 0; j < sArrayList.size(); j++) {
                         ClassShare share = sArrayList.get(j);
@@ -526,10 +530,9 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                             memoScript.setScriptContents(contents);
                             memoScript.setScriptSharecode(sharecode);
                             mArrayList.add(memoScript);
-                            Log.d(TAG,"Connect!" +scode + " " + sharecode + " " + kname +" " + sname);
+
                             break;
                         }
-                        Log.d(TAG,scode + " " + sharecode + " " + kname +" " + sname);
 
                     }
                 }
