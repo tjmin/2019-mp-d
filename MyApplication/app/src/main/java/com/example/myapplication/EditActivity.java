@@ -2,6 +2,7 @@
 package com.example.myapplication;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ public class EditActivity extends AppCompatActivity {
 
     public static final String SCRIPT_EXTRA_Key = "script_id";
 
+    private int kid;
     private String kname, ktitle, kcontents;
 
     @Override
@@ -44,14 +46,14 @@ public class EditActivity extends AppCompatActivity {
         setSupportActionBar(toolbar1);
         getSupportActionBar().setTitle("MEMO TOGETHER");
 
-
         inputScriptTitle = findViewById(R.id.txtTitle);
         inputScriptContents = findViewById(R.id.txtContent);
 
-        kname = getIntent().getStringExtra("key_name"); //id를 main activity에서 전달받음
-        ktitle = getIntent().getStringExtra("key_title"); //id를 main activity에서 전달받음
-        kcontents = getIntent().getStringExtra("key_contents"); //id를 main activity에서 전달받음
-
+        Intent intent = getIntent();
+        kid = intent.getIntExtra("key_id",0); //메모를 "생성"할 때, id를 main activity에서 전달받음
+        kname = intent.getStringExtra("key_name"); //메모를 "생성"할 때, id를 main activity에서 전달받음
+        ktitle = intent.getStringExtra("key_title"); //메모를 "수정"할 때, id를 main activity에서 전달받음
+        kcontents = intent.getStringExtra("key_contents"); //메모를 "수정"할 때, id를 main activity에서 전달받음
 
         inputScriptTitle.setText(ktitle);
         inputScriptContents.setText(kcontents);
@@ -75,7 +77,6 @@ public EditText txttitle ;
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
-        //int id = item.getItemId();
         txttitle = findViewById(R.id.txtTitle);
         if(txttitle.length() == 0) {
             Toast.makeText(getApplicationContext(), "제목을 입력해주세요", Toast.LENGTH_LONG).show();
@@ -93,14 +94,23 @@ public EditText txttitle ;
 
 // 작성자: 이원구
     private void onSaveScript() {
+
         String sharecode = "temp"; /////////////
 
+        String id = Integer.toString(kid);
+        Log.d(TAG,id);
+        Log.d(TAG,Integer.toString(kid));
         String title = inputScriptTitle.getText().toString();
         String contents = inputScriptContents.getText().toString();
 
         InsertData task = new InsertData();
-        task.execute("http://" + IP_ADDRESS + "/insertmemo.php", "userid="+kname, "&title="+title, "&contents="+contents, "&sharecode="+sharecode);
 
+        if (kname == null) { //수정인 경우
+            task.execute("http://" + IP_ADDRESS + "/modifymemo.php", "id=" + id, "&title="+title, "&contents="+contents);
+        }
+        else { //추가인 경우
+            task.execute("http://" + IP_ADDRESS + "/insertmemo.php", "userid="+kname, "&title="+title,"&contents="+contents, "&sharecode="+sharecode);
+        }
         finish();
     }
 
@@ -113,15 +123,14 @@ public EditText txttitle ;
         protected void onPreExecute() {
             super.onPreExecute();
 
-            progressDialog = ProgressDialog.show(EditActivity.this,
-                    "Please Wait", null, true, true);
+            //progressDialog = ProgressDialog.show(EditActivity.this,                    "Please Wait", null, true, true);
         }
 
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
             Log.d(TAG, "POST response  - " + result);
         }
 
@@ -129,13 +138,13 @@ public EditText txttitle ;
         @Override
         protected String doInBackground(String... params) {
 
-            String s1 = (String)params[1];
-            String s2 = (String)params[2];
-            String s3 = (String)params[3];
-            String s4 = (String)params[4];
-
             String serverURL = (String)params[0];
-            String postParameters = s1+s2+s3+s4;
+            String postParameters = "";
+            for (int i=1; i<params.length; i++) {
+                postParameters = postParameters.concat(params[i]);
+                Log.d(TAG,params[i]);
+            }
+            Log.d(TAG,"tttttttttt" + postParameters);
 
             try {
 
@@ -191,6 +200,5 @@ public EditText txttitle ;
 
         }
     }
-
 }
 

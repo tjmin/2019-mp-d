@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
     private RecyclerView mRecyclerView;
 
-    private String kid, kname;
+    private String kname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         mAdapter = new ScriptDataAdapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
-        kid = getIntent().getStringExtra("key_id"); //id를 main activity에서 전달받음
         kname = getIntent().getStringExtra("key_name"); //id를 main activity에서 전달받음
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
@@ -248,6 +247,8 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     public void onScriptClick(Script script) {
         Intent edit = new Intent(this, EditActivity.class);
 
+        edit.putExtra("key_id", script.getId());
+        Log.d(TAG,Integer.toString(script.getId()));
         edit.putExtra("key_title", script.getScriptTitle());
         edit.putExtra("key_contents", script.getScriptContents());
 
@@ -356,6 +357,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     private void showResult () {
 
         String TAG_JSON = "results";
+        String TAG_ID = "id";
         String TAG_USERID = "userid";
         String TAG_TITLE = "title";
         String TAG_CONTENTS = "contents";
@@ -369,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
                 JSONObject item = jsonArray.getJSONObject(i);
 
+                int id = item.getInt(TAG_ID);
                 String userid = item.getString(TAG_USERID);
                 String title = item.getString(TAG_TITLE);
                 String contents = item.getString(TAG_CONTENTS);
@@ -376,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
                 Script memoScript = new Script();
                 if (userid.equals(kname)) {
+                    memoScript.setId(id);
                     memoScript.setUserId(userid);
                     memoScript.setScriptTitle(title);
                     memoScript.setScriptContents(contents);
