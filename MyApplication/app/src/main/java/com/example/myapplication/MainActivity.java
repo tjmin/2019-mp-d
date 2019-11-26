@@ -109,13 +109,21 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
             public void onRightClicked(int position) {
                 Script script = mAdapter.getScript(position);
                 String id = Integer.toString(script.getId());
+                String sharecode = script.getScriptSharecode();
+                String mid = script.getUserId(); //메모 작성자 이름
 
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/deletememo.php", "id=" + id);
+                if (mid.equals(kname)) { //내 메모면
+                    task.execute("http://" + IP_ADDRESS + "/deletememo.php", "id=" + id);
+                }
+                else { //공유받은 메모면
+                    task.execute("http://" + IP_ADDRESS + "/deleteshare.php", "memoid=" + sharecode + "&shareid=" + kname);
+                }
 
                 mAdapter.mList.remove(position);
                 loadScripts();
                 Toast.makeText(getApplicationContext(),"메모가 삭제 되었습니다.", Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
@@ -227,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                         task.execute("http://" + IP_ADDRESS + "/insertshare.php", "memoid="+sharecode,"&shareid="+kname);
 
                         Toast.makeText(getApplicationContext(), "메모가 추가 되었습니다." ,Toast.LENGTH_LONG).show();
+                        loadScripts();
+
                         //Toast.makeText(getApplicationContext(), "존재하지 않거나 잘못된 주소입니다. 주소를 확인해주세요." ,Toast.LENGTH_LONG).show();
                         //Toast.makeText(getApplicationContext(), "이미 추가된 메모입니다." ,Toast.LENGTH_LONG).show();
                     }
