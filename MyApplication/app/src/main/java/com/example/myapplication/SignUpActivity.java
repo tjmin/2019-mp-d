@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -23,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 //작성자 : 민태준
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends AppCompatActivity {
     //아이디 체크 메소드
     public static int IdCheck(ArrayList<String> iList, ArrayList<String> nList, String id, String pw, String pw2, String name) {
         if (id.length() < 4 || id.length() > 20) {
