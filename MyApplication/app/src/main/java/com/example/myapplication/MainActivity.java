@@ -41,7 +41,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.myapplication.EditActivity.SCRIPT_EXTRA_Key;
 
@@ -51,7 +50,9 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     private static String IP_ADDRESS = "13.125.120.7";
     private static final String TAG = "MainActivity";
 
-    private ArrayList<Script> mArrayList;
+    private ArrayList<Script> mArrayList; //메모 정보가 담길 array
+    private ArrayList<ClassShare> sArrayList; //공유 메모의 정보가 담길 array
+
     private ScriptDataAdapter mAdapter;
 
     SwipeController swipeController = null;
@@ -74,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
 
         mArrayList = new ArrayList<>();
+        sArrayList = new ArrayList<>();
         mAdapter = new ScriptDataAdapter(mArrayList);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -216,6 +218,14 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         builder.setPositiveButton("추가",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        //EditText mEditTextShare = (EditText) findViewById(R.id.inputPath);
+                        //String sharecode2 = mEditTextShare.getText().toString();
+                        String sharecode = edittext.getText().toString();
+                        Log.d(TAG,sharecode);
+
+                        InsertData task = new InsertData();
+                        task.execute("http://" + IP_ADDRESS + "/insertshare.php", "memoid="+sharecode,"&shareid="+kname);
+
                         Toast.makeText(getApplicationContext(), "메모가 추가 되었습니다." ,Toast.LENGTH_LONG).show();
                         //Toast.makeText(getApplicationContext(), "존재하지 않거나 잘못된 주소입니다. 주소를 확인해주세요." ,Toast.LENGTH_LONG).show();
                         //Toast.makeText(getApplicationContext(), "이미 추가된 메모입니다." ,Toast.LENGTH_LONG).show();
@@ -262,16 +272,20 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
     //     작성자: 이원구
     private void loadScripts() {
         mArrayList.clear();
+        sArrayList.clear();
 
         mAdapter.setListener(this);
 
-        GetData task = new GetData();
-        task.execute( "http://" + IP_ADDRESS + "/getmemo.php", "");
+        GetShare task = new GetShare();
+        task.execute( "http://" + IP_ADDRESS + "/getshare.php", "");
+        GetData task2 = new GetData();
+        task2.execute( "http://" + IP_ADDRESS + "/getmemo.php", "");
     }
 
 
     private String mJsonString;
-    private class GetData extends AsyncTask<String, Void, String> {
+
+    private class GetShare extends AsyncTask<String, Void, String> {
 
         ProgressDialog progressDialog;
         String errorString = null;
@@ -293,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 Log.d(TAG, "null error");
             } else {
                 mJsonString = result;
-                showResult();
+                getShare();
             }
         }
 
@@ -349,7 +363,116 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
             }
         }
     }
-    private void showResult () {
+
+    private void getShare () {
+        String TAG_JSON = "results";
+        String TAG_MEMOID = "memoid";
+        String TAG_SHAREID = "shareid";
+        try {
+            JSONObject jsonObject = new JSONObject(mJsonString);
+            JSONArray jsonArray = jsonObject.getJSONArray(TAG_JSON);
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+
+                JSONObject item = jsonArray.getJSONObject(i);
+
+                String memoid = item.getString(TAG_MEMOID);
+                String shareid = item.getString(TAG_SHAREID);
+
+                ClassShare memoScript = new ClassShare();
+                if (shareid.equals(kname)) {
+                    memoScript.setmemo_id(memoid);
+                    memoScript.setshare_id(shareid);
+                    sArrayList.add(memoScript);
+                }
+
+            }
+
+        } catch (JSONException e) {
+            Log.d(TAG, "showResult : ", e);
+        }
+    }
+
+    private class GetData extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(MainActivity.this,
+                    "Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressDialog.dismiss();
+            Log.d(TAG, "response - " + result);
+            if (result == null) {
+                Log.d(TAG, "null error");
+            } else {
+                mJsonString = result;
+                getMemo();
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+            try {
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if (responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                } else {
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while ((line = bufferedReader.readLine()) != null) {
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+            } catch (Exception e) {
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+                return null;
+            }
+        }
+    }
+
+    private void getMemo () {
 
         String TAG_JSON = "results";
         String TAG_ID = "id";
@@ -373,13 +496,32 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 String sharecode = item.getString(TAG_SHARECODE);
 
                 Script memoScript = new Script();
-                if (userid.equals(kname)) {
+                if (userid.equals(kname)) { //자신이 만든 메모면
                     memoScript.setId(id);
                     memoScript.setUserId(userid);
                     memoScript.setScriptTitle(title);
                     memoScript.setScriptContents(contents);
                     memoScript.setScriptSharecode(sharecode);
                     mArrayList.add(memoScript);
+                } //19dudt0d3t
+                else { //다른 사람이 만든 메모면
+                    for (int j = 0; j < sArrayList.size(); j++) {
+                        ClassShare share = sArrayList.get(j);
+                        String scode = share.getmemo_id();
+                        String sname = share.getshare_id();
+                        if (kname.equals(sname) && sharecode.equals(scode)) { //근데 share 의 name이 같고, share 번호도 같을 때
+                            memoScript.setId(id);
+                            memoScript.setUserId(userid);
+                            memoScript.setScriptTitle(title);
+                            memoScript.setScriptContents(contents);
+                            memoScript.setScriptSharecode(sharecode);
+                            mArrayList.add(memoScript);
+                            Log.d(TAG,"Connect!" +scode + " " + sharecode + " " + kname +" " + sname);
+                            break;
+                        }
+                        Log.d(TAG,scode + " " + sharecode + " " + kname +" " + sname);
+
+                    }
                 }
 
                 mAdapter.notifyDataSetChanged();
@@ -389,6 +531,8 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
             Log.d(TAG, "showResult : ", e);
         }
     }
+
+
 
     class InsertData extends AsyncTask<String, Void, String> {
         ProgressDialog progressDialog;
