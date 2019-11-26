@@ -211,6 +211,8 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("key_id", id);
                         intent.putExtra("key_name", name);
+                        mEditTextPw.setText("");
+
                         startActivity(intent);
                         login_flag = 1;
                         break;
