@@ -93,7 +93,7 @@ public class ScriptDataAdapter extends RecyclerView.Adapter<ScriptDataAdapter.Sc
     }
 
     //  작성자: 이원구
-    private Script getScript(int position) {
+    public Script getScript(int position) {
         return mList.get(position);
     }
 }

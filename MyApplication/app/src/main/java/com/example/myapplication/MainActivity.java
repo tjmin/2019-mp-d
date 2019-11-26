@@ -83,8 +83,6 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
                 mLinearLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(dividerItemDecoration);
 
-        //loadScripts();
-
 
         Button btn_plus = (Button) findViewById(R.id.btn_plus);
         btn_plus.setOnClickListener(new View.OnClickListener() {
@@ -107,14 +105,13 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                
-//                기존 로컬디비에서 제거 line
-//                dao.deleteScript(mAdapter.mList.remove(position));
+                Script script = mAdapter.getScript(position);
+                String id = Integer.toString(script.getId());
+
+                InsertData task = new InsertData();
+                task.execute("http://" + IP_ADDRESS + "/deletememo.php", "id=" + id);
 
                 mAdapter.mList.remove(position);
-                
-                mAdapter.notifyItemRemoved(position);
-                mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
 
                 loadScripts();
 
@@ -353,7 +350,6 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
             }
         }
     }
-
     private void showResult () {
 
         String TAG_JSON = "results";
@@ -394,4 +390,88 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
             Log.d(TAG, "showResult : ", e);
         }
     }
+
+    class InsertData extends AsyncTask<String, Void, String> {
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            progressDialog = ProgressDialog.show(MainActivity.this,"Please Wait", null, true, true);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            progressDialog.dismiss();
+            Log.d(TAG, "POST response  - " + result);
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = (String)params[0];
+            String postParameters = "";
+            for (int i=1; i<params.length; i++) {
+                postParameters = postParameters.concat(params[i]);
+            }
+
+            try {
+
+                URL url = new URL(serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.connect();
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "POST response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+
+                bufferedReader.close();
+
+
+                return sb.toString();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "InsertData: Error ", e);
+
+                return new String("Error: " + e.getMessage());
+            }
+
+        }
+    }
+
 }
