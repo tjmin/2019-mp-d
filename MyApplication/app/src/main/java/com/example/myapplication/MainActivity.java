@@ -110,7 +110,12 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
         swipeController = new SwipeController(new SwipeControllerActions() {
             @Override
             public void onRightClicked(int position) {
-                //dao.deleteScript(mAdapter.mList.remove(position));
+                
+//                기존 로컬디비에서 제거 line
+//                dao.deleteScript(mAdapter.mList.remove(position));
+
+                mAdapter.mList.remove(position);
+                
                 mAdapter.notifyItemRemoved(position);
                 mAdapter.notifyItemRangeChanged(position, mAdapter.getItemCount());
 
