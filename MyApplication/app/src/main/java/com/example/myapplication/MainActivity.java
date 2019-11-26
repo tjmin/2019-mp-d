@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements ScriptListener {
 
         kid = getIntent().getStringExtra("key_id"); //id를 main activity에서 전달받음
         kname = getIntent().getStringExtra("key_name"); //id를 main activity에서 전달받음
-        mAdapter.setId(kid);
+        mAdapter.setId(kname);
 
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mRecyclerView.getContext(),
