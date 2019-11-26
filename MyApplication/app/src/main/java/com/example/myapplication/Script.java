@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "scripts")
 public class Script {
     @PrimaryKey(autoGenerate = true)
-    private int id; // default value
+    private int id;
     @ColumnInfo(name = "userName")
     private String userId;
     @ColumnInfo(name = "title")
