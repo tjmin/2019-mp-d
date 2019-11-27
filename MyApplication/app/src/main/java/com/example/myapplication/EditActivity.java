@@ -71,19 +71,23 @@ public class EditActivity extends AppCompatActivity {
         return true;
     }
 
-public EditText txttitle ;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        EditText editText_title, editText_contents;
 
-        txttitle = findViewById(R.id.txtTitle);
-        if(txttitle.length() == 0) {
-            Toast.makeText(getApplicationContext(), "제목을 입력해주세요", Toast.LENGTH_LONG).show();
+        editText_title = findViewById(R.id.txtTitle);
+        editText_contents = findViewById(R.id.txtContent);
+        if(editText_title.length() == 0) {
+            Toast.makeText(getApplicationContext(), "제목을 입력해주세요", Toast.LENGTH_SHORT).show();
+        }
+        else if (editText_contents.length() == 0) {
+            Toast.makeText(getApplicationContext(), "내용을 입력해주세요", Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(getApplicationContext(), "저장되었습니다.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "저장되었습니다.", Toast.LENGTH_SHORT).show();
             onSaveScript();
         }
 
